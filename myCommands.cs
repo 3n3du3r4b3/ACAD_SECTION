@@ -14,7 +14,7 @@ using System.Collections.Generic;
 
 namespace acad_geometry_data
 {
-    //7676476
+    
     // This class is instantiated by AutoCAD for each document when
     // a command is called by the user the first time in the context
     // of a given document. In other words, non static data in this class
