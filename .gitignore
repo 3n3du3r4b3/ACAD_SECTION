@@ -352,3 +352,6 @@ MigrationBackup/
 #MY OWN STUFF
 .bin/
 .Properties/
+/Properties/AssemblyInfo.cs
+/acad_geometry_data.csproj
+/acad_geometry_data.sln
