@@ -12,111 +12,128 @@ using System.Windows.Media.Media3D;
 
 namespace Majstersztyk
 {
-    /// <summary>
-    /// Description of TS_ordinate.
-    /// </summary>s
-    /// 
+	/// <summary>
+	/// Description of TS_ordinate.
+	/// </summary>s
+	/// 
 
-    public class TS_part:TS_contour
-    {
+	public class TS_part:TS_contour
+	{
 		public List<TS_void> Voids { get; private set; }
 		public TS_contour Contour { get; private set; }
-        public TS_materials.TS_material Material { get; private set; }
+		public TS_materials.TS_material Material { get; private set; }
 		public List<TS_reinforcement> BelongingReinforcement { get; private set; }
 
-        public override string TypeOf { get { return typeOf; } }
-        private new string typeOf = "Part";
+		public override string TypeOf { get { return typeOf; } }
+		private new string typeOf = "Part";
 
-        public TS_part(TS_materials.TS_material material, TS_contour contour, List<TS_void> voids):base()
-        {
-            BelongingReinforcement = new List<TS_reinforcement>();
+		public TS_part(TS_materials.TS_material material, TS_contour contour, List<TS_void> voids):base()
+		{
+			BelongingReinforcement = new List<TS_reinforcement>();
 			Material = material;
-            Voids = voids;
-            Contour = contour;
-            CalcProperties();
-        }
-        
-        protected override double CalcArea()
-        {
-            double area = Contour.Area;
-            foreach (var myVoid in Voids) {
+			Voids = voids;
+			Contour = contour;
+			CalcProperties();
+		}
+		
+		protected override double CalcArea()
+		{
+			double area = Contour.Area;
+			foreach (var myVoid in Voids) {
 				area += myVoid.Area;
-            }
+			}
 			return area;
-        }
+		}
 
-        protected override double CalcSx(){
+		protected override double CalcSx(){
 			double sx = Contour.StaticMomX;
 			foreach (var myVoid in Voids) {
 				sx += myVoid.StaticMomX;
-            }
+			}
 			return sx;
-        }
+		}
 
-        protected override double CalcSy(){
-        	double sy = Contour.StaticMomY;
+		protected override double CalcSy(){
+			double sy = Contour.StaticMomY;
 			foreach (var myVoid in Voids) {
 				sy += myVoid.StaticMomY;
-            }
+			}
 			return sy;
-        }
+		}
 
-        protected override double CalcIx(){
+		protected override double CalcIx(){
 			double ix = Contour.InertiaMomX;
 			foreach (var myVoid in Voids) {
 				ix += myVoid.InertiaMomX;
-            }
+			}
 			return ix;        	
-        }
+		}
 
-        protected override double CalcIy(){
+		protected override double CalcIy(){
 			double iy = Contour.InertiaMomY;
 			foreach (var myVoid in Voids) {
 				iy += myVoid.InertiaMomY;
-            }
+			}
 			return iy;   
-        }
+		}
 
-        protected override  double CalcIxy(){
- 			double ixy = Contour.DeviationMomXY;
+		protected override  double CalcIxy(){
+			double ixy = Contour.DeviationMomXY;
 			foreach (var myVoid in Voids) {
 				ixy += myVoid.DeviationMomXY;
-            }
+			}
 			return ixy; 
-        }
-        
-        protected override bool IsObjectCorrect()
-        {
-            if (!Contour.IsCorrect)
-                return false;
+		}
+		
+		public new bool IsPointInside(TS_point point)
+		{
+			if (Contour.IsPointInside(point))
+			{
+				foreach (TS_void thisVoid in Voids)
+				{
+					if (thisVoid.IsPointInside(point))
+					{
+						return false;
+					}
+				}
+				return true;
+			}
 
-            foreach (var Void in Voids)
-            {
-                if (!Void.IsCorrect)
-                    return false;
-            }
+			return false;
+		}
 
-            foreach (var Void in Voids) {
-                foreach (var vert in Void.Vertices) {
-                    if (!Contour.IsPointInside(vert))
-                        return false;
-                }
-            }
+		protected override bool IsObjectCorrect()
+		{
+			if (!Contour.IsCorrect)
+				return false;
 
-            for (int i = 0; i < Voids.Count; i++) {
-                for (int j = 0; j < Voids.Count; j++) {
-                    if (i != j) {
-                        foreach (var vert in Voids[i].Vertices) {
-                            if (Voids[j].IsPointInside(vert)) 
-                            	return false;
-                        }
-                    }
-                }
-            }
+			foreach (var Void in Voids)
+			{
+				if (!Void.IsCorrect)
+					return false;
+			}
 
-            return true;
-        }
-        
+			foreach (var Void in Voids) {
+				foreach (var vert in Void.Vertices) {
+					if (!Contour.IsPointInside(vert))
+						return false;
+				}
+			}
+
+			for (int i = 0; i < Voids.Count; i++) {
+				for (int j = 0; j < Voids.Count; j++) {
+					if (i != j) {
+						foreach (var vert in Voids[i].Vertices) {
+							if (Voids[j].IsPointInside(vert)) 
+								return false;
+						}
+					}
+				}
+			}
+
+			return true;
+		}
+		
 		public override string ToString()
 		{
 			string text = Environment.NewLine + "";
@@ -167,5 +184,5 @@ namespace Majstersztyk
 			return new TS_reinforcement(notMachingBars, barGroup.Material, barGroup.Name);
 			}
 
-    }
+	}
 }
