@@ -20,7 +20,6 @@ namespace Majstersztyk
 		public List<TS_side> Sides { get; protected set; }
 		public override string TypeOf { get { return typeOf; } }
 		private static new string typeOf = "Contour";
-
 		protected TS_contour() {
 			Vertices = new List<TS_point>();
 		}
@@ -255,6 +254,40 @@ namespace Majstersztyk
 		public override string ToString()
 		{
 			return Environment.NewLine + base.ToString();
+		}
+
+		public virtual TS_point TopLeftPoint {
+			get {
+				double Xmin = Vertices[0].X;
+				double Ymax = Vertices[0].Y;
+
+				foreach (TS_point thisPoint in Vertices)
+				{
+					if (thisPoint.X < Xmin)
+						Xmin = thisPoint.X;
+					if (thisPoint.Y > Ymax)
+						Ymax = thisPoint.Y;
+				}
+
+				return new TS_point(Xmin, Ymax);
+			}
+		}
+
+		public virtual TS_point BottomRightPoint {
+			get {
+				double Xmax = Vertices[0].X;
+				double Ymin = Vertices[0].Y;
+
+				foreach (TS_point thisPoint in Vertices)
+				{
+					if (thisPoint.X > Xmax)
+						Xmax = thisPoint.X;
+					if (thisPoint.Y < Ymin)
+						Ymin = thisPoint.Y;
+				}
+
+				return new TS_point(Xmax, Ymin);
+			}
 		}
 
 	}

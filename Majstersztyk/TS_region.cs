@@ -25,9 +25,10 @@ namespace Majstersztyk
         public virtual double CentrPrincipleInertiaMom_1 { get; protected set; }
         public virtual double CentrPrincipleInertiaMom_2 { get; protected set; }
         public virtual double AngleOfPrincipleLayout { get; protected set; }
+
         public virtual string TypeOf {get{return typeOf;}}
 		protected string typeOf;
-        
+
         protected abstract double CalcArea();
         protected abstract double CalcSx();
         protected abstract double CalcSy();

@@ -20,7 +20,7 @@ namespace Majstersztyk
 		public List<TS_part> Parts { get; private set; }
 		public List<TS_reinforcement> ReinforcementEntire { get; private set; }
 		public List<TS_reinforcement> ReinforcementFree { get; private set; }
-
+		public double ConstantTorsion { get { return CalcConstantTorsion(); } }
 		public override string TypeOf { get { return typeOf; } }
 		private new string typeOf = "Section";
 		/*
@@ -213,6 +213,12 @@ namespace Majstersztyk
 			CentrDeviationMom_XY = centrxy;
 		}
 
+		protected double CalcConstantTorsion()
+		{
+			TS_mesh mesh = new TS_mesh(this);
+			return mesh.TorsionConstant();
+		}
+
 		public bool IsPointInside(TS_point point)
 		{
 			foreach (TS_part part in Parts)
@@ -330,6 +336,35 @@ namespace Majstersztyk
 			ReinforcementFree.Add(new TS_reinforcement(BarsGroup, reoGroup.Material));*/
 		}
 
+		public TS_point CornerTopLeft { get {
+				double X = Parts[0].TopLeftPoint.X;
+				double Y = Parts[0].TopLeftPoint.Y;
+				foreach (TS_part part in Parts)
+				{
+					if (part.TopLeftPoint.X < X)
+						X = part.TopLeftPoint.X;
+
+					if (part.TopLeftPoint.Y > Y)
+						Y = part.TopLeftPoint.Y;
+				}
+				return new TS_point(X, Y);
+			} }
+
+		public TS_point CornerBottomRight {
+			get {
+				double X = Parts[0].BottomRightPoint.X;
+				double Y = Parts[0].BottomRightPoint.Y;
+				foreach (TS_part part in Parts)
+				{
+					if (part.BottomRightPoint.X > X)
+						X = part.BottomRightPoint.X;
+
+					if (part.BottomRightPoint.Y < Y)
+						Y = part.BottomRightPoint.Y;
+				}
+				return new TS_point(X, Y);
+			}
+		}
 
 		private static List<TS_point> TransformByMoving(List<TS_point> Vertices, TS_point newCenterPoint)
 		{
@@ -430,6 +465,7 @@ namespace Majstersztyk
 		}
 	}
 
+	
 	public class StressPoint
 	{
 		public TS_point PointGlobalCS { get; set; }

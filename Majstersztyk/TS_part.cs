@@ -183,6 +183,43 @@ namespace Majstersztyk
 			BelongingReinforcement.Add(new TS_reinforcement(matchinBars, barGroup.Material, barGroup.Name));
 			return new TS_reinforcement(notMachingBars, barGroup.Material, barGroup.Name);
 			}
+		
+		public override TS_point TopLeftPoint
+		{
+			get
+			{
+				double Xmin = Contour.Vertices[0].X;
+				double Ymax = Contour.Vertices[0].Y;
 
+				foreach (TS_point thisPoint in Contour.Vertices)
+				{
+					if (thisPoint.X < Xmin)
+						Xmin = thisPoint.X;
+					if (thisPoint.Y > Ymax)
+						Ymax = thisPoint.Y;
+				}
+
+				return new TS_point(Xmin, Ymax);
+			}
+		}
+
+		public override TS_point BottomRightPoint
+		{
+			get
+			{
+				double Xmax = Contour.Vertices[0].X;
+				double Ymin = Contour.Vertices[0].Y;
+
+				foreach (TS_point thisPoint in Contour.Vertices)
+				{
+					if (thisPoint.X > Xmax)
+						Xmax = thisPoint.X;
+					if (thisPoint.Y < Ymin)
+						Ymin = thisPoint.Y;
+				}
+
+				return new TS_point(Xmax, Ymin);
+			}
+		}
 	}
 }

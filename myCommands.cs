@@ -22,6 +22,7 @@ namespace acad_geometry_data
     public class MyCommands
     {
         TS_section section;
+        /*
         // The CommandMethod attribute can be applied to any public  member 
         // function of any public class.
         // The function should take no arguments and return nothing.
@@ -82,7 +83,7 @@ namespace acad_geometry_data
             // Return a value to the AutoCAD Lisp Interpreter
             return 1;
         }
-
+        */
 
         [CommandMethod("TS_SECTION-PROP")]
         public void SectionProperties()
@@ -215,7 +216,7 @@ namespace acad_geometry_data
 
             try
             {
-                Circle circle = new Circle(new Point3d(section.Centroid.X, section.Centroid.Y, 0), Vector3d.ZAxis, Math.Sqrt(section.Area) / 4);
+                Circle circle = new Circle(new Point3d(section.Centroid.X, section.Centroid.Y, 0), Vector3d.ZAxis, Math.Sqrt(section.Area) / 8);
                 Xline line1 = new Xline();
                 line1.BasePoint = circle.Center;
                 line1.UnitDir =
@@ -241,7 +242,7 @@ namespace acad_geometry_data
             {
                 ed.WriteMessage(ex.Message);
             }
-
+            /*
             SectionSaved sectionSaved = new SectionSaved();
             sectionSaved.Section = section;
             sectionSaved.AddVertexAt(0, new Point2d(0, 0), 0, 0, 0);
@@ -262,7 +263,9 @@ namespace acad_geometry_data
             catch (System.Exception ex)
             {
                 ed.WriteMessage(ex.Message);
-            }
+            }*/
+
+            ed.WriteMessage("\nConstant torsion: " + section.ConstantTorsion);
 
             tr.Commit();
             tr.Dispose();
